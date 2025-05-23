@@ -27,7 +27,7 @@ pipeline {
             }
             steps {
                 script {
-                    withDockerRegistry([credentialsId: 'dockerhub_creds', url: 'https://index.docker.io/v1/']) {
+                    withDockerRegistry([credentialsId: 'dockerhub-creds', url: 'https://index.docker.io/v1/']) {
                         def image = docker.build("${IMAGE_NAME}:${TAG}")
                         image.push()
                     }
@@ -41,7 +41,7 @@ pipeline {
             }
             steps {
                 //withCredentials([file(credentialsId: 'kubeconfig-cred-id', variable: 'KUBECONFIG')])
-                 withKubeConfig([credentialsId: 'kubeconfig'])
+                 withKubeConfig([credentialsId: 'kubeconfig-cred'])
                 {
                     sh 'kubectl apply -f deployment.yaml'
                     sh 'kubectl apply -f service.yaml'
