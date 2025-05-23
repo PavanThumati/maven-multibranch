@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        IMAGE_NAME = 'harishkoppineni/java-hello-app'
+        IMAGE_NAME = 'pavanthumati/java-hello-app'
         TAG = 'latest'
     }
 
@@ -27,7 +27,7 @@ pipeline {
             }
             steps {
                 script {
-                    docker.withRegistry('https://index.docker.io/v2/', 'docker-hub-cred') {
+                    withDockerRegistry([credentialsId: 'dockerhub_creds', url: 'https://index.docker.io/v1/']) {
                         def image = docker.build("${IMAGE_NAME}:${TAG}")
                         image.push()
                     }
