@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        IMAGE_NAME = 'harishkoppineni/java-hello-app'
+        IMAGE_NAME = 'pavanthumati/java-hello-app'
         TAG = 'latest'
     }
 
@@ -22,12 +22,12 @@ pipeline {
         }
 
         stage('Docker Build and Push') {
-            // when {
-            //     branch 'develop'
-            // }
+            when {
+                branch 'develop'
+            }
             steps {
                 script {
-                    docker.withRegistry('https://index.docker.io/v1/', 'docker-hub-cred') {
+                    withDockerRegistry([credentialsId: 'dockerhub_creds', url: 'https://index.docker.io/v1/']) {
                         def image = docker.build("${IMAGE_NAME}:${TAG}")
                         image.push()
                     }
@@ -36,9 +36,9 @@ pipeline {
         }
 
         stage('Deploy to Kubernetes') {
-            // when {
-            //     branch 'develop'
-            // }
+            when {
+                branch 'develop'
+            }
             steps {
                 //withCredentials([file(credentialsId: 'kubeconfig-cred-id', variable: 'KUBECONFIG')])
                  withKubeConfig([credentialsId: 'kubeconfig'])
